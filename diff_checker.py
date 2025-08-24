@@ -33,6 +33,8 @@ def _load_household_data(file_path):
     print(f"家計簿 'Amazon MasterCard' の合計金額: {amazon_mastercard_df['金額(￥)'].sum():,.0f}円")
     
     amazon_mastercard_df['金額(￥)'] = pd.to_numeric(amazon_mastercard_df['金額(￥)'], errors='coerce').fillna(0)
+    # 「収入」の場合、金額を負の値にする
+    amazon_mastercard_df.loc[amazon_mastercard_df['収入/支出'] == '収入', '金額(￥)'] *= -1
     return amazon_mastercard_df
 
 def _load_card_statement_data(file_path):
@@ -291,13 +293,46 @@ def main():
     output_dir = 'output'
     os.makedirs(output_dir, exist_ok=True)
 
+    # 再度データをロードして件数と合計金額を取得
+    amazon_mastercard_df = _load_household_data(household_excel_path)
+    card_df_filtered = _load_card_statement_data(card_csv_path)
+
+    household_count = len(amazon_mastercard_df)
+    household_total = amazon_mastercard_df['金額(￥)'].sum()
+    card_count = len(card_df_filtered)
+    card_total = card_df_filtered['支払金額'].sum()
+    total_difference = household_total - card_total
+
     output_file = os.path.join(output_dir, 'account_differences.md')
     with open(output_file, 'w', encoding='utf-8') as f:
         f.write("# 家計簿とカード明細の差分レポート\n\n")
+        f.write("## 概要\n\n")
+        f.write(f"- **家計簿項目数**: {household_count} 件\n")
+        f.write(f"- **カード明細項目数**: {card_count} 件\n")
+        f.write(f"- **家計簿合計金額**: {household_total:,.0f} 円\n")
+        f.write(f"- **カード明細合計金額**: {card_total:,.0f} 円\n")
+        f.write(f"- **家計簿とカード明細の差額**: {total_difference:,.0f} 円\n\n")
 
         if not household_only_differences.empty:
+            # ユーザーのフィードバックに基づいて列を再編成
+            columns_to_keep = [col for col in household_only_differences.columns if col not in ['資産', '通貨', '金額(￥)', '収入/支出', 'メモ']]
+            
+            # 金額(￥)は削除するが、表示用に新しい列として「金額」を作成
+            temp_df = household_only_differences.copy()
+            if '金額(￥)' in temp_df.columns:
+                temp_df['金額'] = temp_df['金額(￥)'].apply(lambda x: f"{x:,.0f} 円")
+                columns_to_keep.insert(0, '金額') # 金額を先頭に移動
+
+            if 'メモ' in temp_df.columns:
+                reordered_household_df = temp_df[columns_to_keep + ['メモ']]
+            else:
+                reordered_household_df = temp_df[columns_to_keep]
+            
+            # NaN値をハイフンに置き換え
+            reordered_household_df = reordered_household_df.fillna('-')
+
             f.write("## 家計簿に記載されていてカード明細にない項目\n\n")
-            f.write(household_only_differences.to_markdown(index=False))
+            f.write(reordered_household_df.to_markdown(index=False))
             f.write("\n\n")
             print("\n家計簿にのみ存在する差分が見つかりました。")
         else:
@@ -306,6 +341,8 @@ def main():
             print("\n家計簿にのみ存在する差分は見つかりませんでした。")
 
         if not card_only_differences.empty:
+            # NaN値をハイフンに置き換え
+            card_only_differences = card_only_differences.fillna('-')
             f.write("## カード明細に記載されていて家計簿にない項目\n\n")
             f.write(card_only_differences.to_markdown(index=False))
             f.write("\n\n")
