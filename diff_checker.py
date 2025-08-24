@@ -291,23 +291,31 @@ def main():
     output_dir = 'output'
     os.makedirs(output_dir, exist_ok=True)
 
-    if not household_only_differences.empty:
-        output_file_household = os.path.join(output_dir, 'household_only_differences.md')
-        with open(output_file_household, 'w', encoding='utf-8') as f:
-            f.write("# 家計簿に記載されていてカード明細にない項目\n\n")
-            f.write(household_only_differences.to_markdown(index=False))
-        print(f"\n家計簿にのみ存在する差分を '{output_file_household}' に出力しました。")
-    else:
-        print("\n家計簿にのみ存在する差分は見つかりませんでした。")
+    output_file = os.path.join(output_dir, 'account_differences.md')
+    with open(output_file, 'w', encoding='utf-8') as f:
+        f.write("# 家計簿とカード明細の差分レポート\n\n")
 
-    if not card_only_differences.empty:
-        output_file_card = os.path.join(output_dir, 'card_only_differences.md')
-        with open(output_file_card, 'w', encoding='utf-8') as f:
-            f.write("# カード明細に記載されていて家計簿にない項目\n\n")
+        if not household_only_differences.empty:
+            f.write("## 家計簿に記載されていてカード明細にない項目\n\n")
+            f.write(household_only_differences.to_markdown(index=False))
+            f.write("\n\n")
+            print("\n家計簿にのみ存在する差分が見つかりました。")
+        else:
+            f.write("## 家計簿に記載されていてカード明細にない項目\n\n")
+            f.write("差分は見つかりませんでした。\n\n")
+            print("\n家計簿にのみ存在する差分は見つかりませんでした。")
+
+        if not card_only_differences.empty:
+            f.write("## カード明細に記載されていて家計簿にない項目\n\n")
             f.write(card_only_differences.to_markdown(index=False))
-        print(f"\nカード明細にのみ存在する差分を '{output_file_card}' に出力しました。")
-    else:
-        print("\nカード明細にのみ存在する差分は見つかりませんでした。")
+            f.write("\n\n")
+            print("カード明細にのみ存在する差分が見つかりました。")
+        else:
+            f.write("## カード明細に記載されていて家計簿にない項目\n\n")
+            f.write("差分は見つかりませんでした。\n\n")
+            print("カード明細にのみ存在する差分は見つかりませんでした。")
+    
+    print(f"\n差分レポートを '{output_file}' に出力しました。")
 
 if __name__ == "__main__":
     main()
