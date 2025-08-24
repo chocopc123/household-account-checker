@@ -355,10 +355,16 @@ def main():
             print("\n家計簿にのみ存在する差分は見つかりませんでした。")
 
         if not card_only_differences.empty:
+            temp_card_df = card_only_differences.copy()
+            # 「支払金額」列に「円」を付けてフォーマット
+            if '支払金額' in temp_card_df.columns:
+                temp_card_df['支払金額'] = temp_card_df['支払金額'].apply(lambda x: f"{x:,.0f} 円")
+            
             # NaN値をハイフンに置き換え
-            card_only_differences = card_only_differences.fillna('-')
+            temp_card_df = temp_card_df.fillna('-')
+
             f.write("## カード明細に記載されていて家計簿にない項目\n\n")
-            f.write(card_only_differences.to_markdown(index=False))
+            f.write(temp_card_df.to_markdown(index=False))
             f.write("\n\n")
             print("カード明細にのみ存在する差分が見つかりました。")
         else:
