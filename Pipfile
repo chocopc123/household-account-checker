@@ -9,6 +9,7 @@ start = "python diff_checker.py"
 [packages]
 pandas = "*"
 openpyxl = "*"
+tabulate = "*"
 
 [dev-packages]
 
