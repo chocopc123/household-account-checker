@@ -315,22 +315,32 @@ def main():
 
         if not household_only_differences.empty:
             # ユーザーのフィードバックに基づいて列を再編成
-            columns_to_keep = [col for col in household_only_differences.columns if col not in ['資産', '通貨', '金額(￥)', '収入/支出', 'メモ']]
-            
-            # 金額(￥)は削除するが、表示用に新しい列として「金額」を作成
             temp_df = household_only_differences.copy()
-            if '金額(￥)' in temp_df.columns:
-                temp_df['金額'] = temp_df['金額(￥)'].apply(lambda x: f"{x:,.0f} 円")
-                columns_to_keep.insert(0, '金額') # 金額を先頭に移動
-
-            # 日付列から時間表示を削除
+            
+            # 日付列のフォーマット
             if '日付' in temp_df.columns:
                 temp_df['日付'] = pd.to_datetime(temp_df['日付']).dt.strftime('%Y-%m-%d')
 
+            # 金額列の作成とフォーマット
+            if '金額(￥)' in temp_df.columns:
+                temp_df['金額'] = temp_df['金額(￥)'].apply(lambda x: f"{x:,.0f} 円")
+            
+            # 最終的に表示する列の順序を定義
+            # '金額(￥)' と '収入/支出' は表示しない
+            # '資産', '通貨' も表示しない
+            display_order = []
+            if '日付' in temp_df.columns:
+                display_order.append('日付')
+            for col in ['分類', '小分類', '内容']:
+                if col in temp_df.columns:
+                    display_order.append(col)
+            if '金額' in temp_df.columns: # 新しく作成した「金額」列
+                display_order.append('金額')
             if 'メモ' in temp_df.columns:
-                reordered_household_df = temp_df[columns_to_keep + ['メモ']]
-            else:
-                reordered_household_df = temp_df[columns_to_keep]
+                display_order.append('メモ')
+            
+            # 最終的なデータフレームを作成
+            reordered_household_df = temp_df[display_order]
             
             # NaN値をハイフンに置き換え
             reordered_household_df = reordered_household_df.fillna('-')
