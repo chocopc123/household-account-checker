@@ -323,6 +323,10 @@ def main():
                 temp_df['金額'] = temp_df['金額(￥)'].apply(lambda x: f"{x:,.0f} 円")
                 columns_to_keep.insert(0, '金額') # 金額を先頭に移動
 
+            # 日付列から時間表示を削除
+            if '日付' in temp_df.columns:
+                temp_df['日付'] = pd.to_datetime(temp_df['日付']).dt.strftime('%Y-%m-%d')
+
             if 'メモ' in temp_df.columns:
                 reordered_household_df = temp_df[columns_to_keep + ['メモ']]
             else:
