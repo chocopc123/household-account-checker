@@ -27,12 +27,12 @@
 }
 
 .tabBtn.active {
-	color: var(--primary);
-	background: rgba(99, 102, 241, 0.1);
+	color: #e0e7ff; /* インディゴ-100 コントラスト比≈13:1, WCAG AAA準拠 */
+	background: rgba(224, 231, 255, 0.1);
 }
 
 .badge {
-	background: var(--primary);
+	background: #4f46e5; /* バッジ背景: white文字とのコントラスト確保 */
 	color: white;
 	font-size: 0.75rem;
 	padding: 0.125rem 0.5rem;
