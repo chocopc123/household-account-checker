@@ -1,5 +1,5 @@
+import { AlertCircle, BarChart3 } from "lucide-react";
 import type React from "react";
-import { BarChart3, AlertCircle } from "lucide-react";
 import type { ComparisonResult } from "../../types";
 import { formatCurrency } from "../../utils/formatter";
 import styles from "./Summary.module.css";
@@ -50,12 +50,12 @@ const Summary: React.FC<SummaryProps> = ({ data }) => {
 								</tr>
 							</thead>
 							<tbody>
-								{data.discrepancies.map((d) => (
-									<tr key={`${d["日付"]}-${d.cardDate}-${d["金額(￥)"]}`}>
-										<td>{d["日付"]}</td>
+								{data.discrepancies.map((d, i) => (
+									<tr key={`${d.日付}-${d.cardDate}-${d["金額(￥)"]}-${i}`}>
+										<td>{d.日付}</td>
 										<td>{d.cardDate}</td>
 										<td className={styles.textWarning}>{d.dateDiff} 日</td>
-										<td>{d["内容"]}</td>
+										<td>{d.内容}</td>
 										<td>{formatCurrency(d["金額(￥)"])}</td>
 									</tr>
 								))}

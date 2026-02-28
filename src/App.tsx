@@ -1,11 +1,12 @@
-import React, { useState } from "react";
-import Header from "./components/Header/Header";
+import type React from "react";
+import { useState } from "react";
 import FileUpload from "./components/FileUpload/FileUpload";
-import Summary from "./components/Summary/Summary";
+import Header from "./components/Header/Header";
 import ResultsTable from "./components/ResultsTable/ResultsTable";
-import { parseHouseholdExcel, parseCardCSV } from "./utils/parser";
+import Summary from "./components/Summary/Summary";
+import type { ComparisonResult } from "./types";
 import { performComparison } from "./utils/comparison";
-import { ComparisonResult } from "./types";
+import { parseCardCSV, parseHouseholdExcel } from "./utils/parser";
 import "./index.css";
 
 const App: React.FC = () => {

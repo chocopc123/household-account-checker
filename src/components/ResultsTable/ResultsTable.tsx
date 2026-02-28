@@ -1,6 +1,7 @@
-import React, { useState } from "react";
 import { CheckCircle2 } from "lucide-react";
-import { ComparisonResult } from "../../types";
+import type React from "react";
+import { useState } from "react";
+import type { ComparisonResult } from "../../types";
 import { formatCurrency } from "../../utils/formatter";
 import styles from "./ResultsTable.module.css";
 
@@ -15,6 +16,7 @@ const ResultsTable: React.FC<ResultsTableProps> = ({ data }) => {
 		<section className="glass">
 			<div className={styles.tabHeader}>
 				<button
+					type="button"
 					className={`${styles.tabBtn} ${activeTab === "household" ? styles.active : ""}`}
 					onClick={() => setActiveTab("household")}
 				>
@@ -22,6 +24,7 @@ const ResultsTable: React.FC<ResultsTableProps> = ({ data }) => {
 					<span className={styles.badge}>{data.householdOnly.length}</span>
 				</button>
 				<button
+					type="button"
 					className={`${styles.tabBtn} ${activeTab === "card" ? styles.active : ""}`}
 					onClick={() => setActiveTab("card")}
 				>
@@ -47,13 +50,13 @@ const ResultsTable: React.FC<ResultsTableProps> = ({ data }) => {
 								</thead>
 								<tbody>
 									{data.householdOnly.map((row, i) => (
-										<tr key={i}>
-											<td>{row["日付"]}</td>
-											<td>{row["分類"]}</td>
-											<td>{row["小分類"]}</td>
-											<td>{row["内容"]}</td>
+										<tr key={`${row.日付}-${row.内容}-${row["金額(￥)"]}-${i}`}>
+											<td>{row.日付}</td>
+											<td>{row.分類}</td>
+											<td>{row.小分類}</td>
+											<td>{row.内容}</td>
 											<td>{formatCurrency(row["金額(￥)"])}</td>
-											<td>{row["メモ"] || "-"}</td>
+											<td>{row.メモ || "-"}</td>
 										</tr>
 									))}
 								</tbody>
@@ -82,10 +85,10 @@ const ResultsTable: React.FC<ResultsTableProps> = ({ data }) => {
 								</thead>
 								<tbody>
 									{data.cardOnly.map((row, i) => (
-										<tr key={i}>
-											<td>{row["利用日"]}</td>
-											<td>{row["店名"]}</td>
-											<td>{formatCurrency(row["支払金額"])}</td>
+										<tr key={`${row.利用日}-${row.店名}-${row.支払金額}-${i}`}>
+											<td>{row.利用日}</td>
+											<td>{row.店名}</td>
+											<td>{formatCurrency(row.支払金額)}</td>
 										</tr>
 									))}
 								</tbody>

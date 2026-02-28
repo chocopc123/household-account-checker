@@ -1,4 +1,4 @@
-import { LOCALE, CURRENCY } from '../constants';
+import { CURRENCY, LOCALE } from "../constants";
 
 /**
  * 金額を通貨形式（JPY）にフォーマットする
@@ -6,5 +6,8 @@ import { LOCALE, CURRENCY } from '../constants';
  * @returns フォーマットされた文字列
  */
 export function formatCurrency(val: number): string {
-    return new Intl.NumberFormat(LOCALE, { style: 'currency', currency: CURRENCY }).format(val);
+	return new Intl.NumberFormat(LOCALE, {
+		style: "currency",
+		currency: CURRENCY,
+	}).format(val);
 }

@@ -1,5 +1,5 @@
+import { CreditCard, FileSpreadsheet, Search } from "lucide-react";
 import React, { useState } from "react";
-import { FileSpreadsheet, CreditCard, Search } from "lucide-react";
 import styles from "./FileUpload.module.css";
 
 interface FileUploadProps {
