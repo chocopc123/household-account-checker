@@ -28,6 +28,25 @@ export function cleanAmount(val: unknown): number {
 }
 
 /**
+ * 家計簿のレコード1行を処理する（金額の符号反転と日付変換）
+ * @param row 家計簿の1行データ
+ * @returns 処理済みレコード
+ */
+export function processHouseholdRow(
+	row: Record<string, unknown>,
+): HouseholdRecord {
+	let amount = parseFloat(String(row["金額(￥)"])) || 0;
+	if (String(row["収入/支出"]) === "収入") {
+		amount *= -1;
+	}
+	return {
+		...row,
+		"金額(￥)": amount,
+		日付: row.日付 ? formatExcelDate(row.日付) : "",
+	} as HouseholdRecord;
+}
+
+/**
  * 家計簿のExcelファイルをパースする
  * @param file Excelファイル
  * @returns レコードの配列
@@ -48,17 +67,7 @@ export async function parseHouseholdExcel(
 
 				const filtered = jsonData
 					.filter((row) => String(row.資産) === HOUSEHOLD_ASSET_NAME)
-					.map((row) => {
-						let amount = parseFloat(String(row["金額(￥)"])) || 0;
-						if (String(row["収入/支出"]) === "収入") {
-							amount *= -1;
-						}
-						return {
-							...row,
-							"金額(￥)": amount,
-							日付: row.日付 ? formatExcelDate(row.日付) : "",
-						} as HouseholdRecord;
-					});
+					.map((row) => processHouseholdRow(row));
 				resolve(filtered);
 			} catch (err) {
 				reject(err);
@@ -67,6 +76,24 @@ export async function parseHouseholdExcel(
 		reader.onerror = reject;
 		reader.readAsArrayBuffer(file);
 	});
+}
+
+/**
+ * カード明細のレコードが有効かどうかを判定する
+ * @param row カード明細の1行データ
+ * @returns 有効ならtrue
+ */
+export function shouldKeepCardRecord(row: {
+	利用日: string;
+	店名: string;
+	支払金額: number;
+}): boolean {
+	const isCardInfo = CARD_INFO_PATTERNS.some((pattern) =>
+		pattern.test(row.店名),
+	);
+	const isEmpty = row.支払金額 === 0 && (!row.利用日 || !row.店名);
+
+	return !(isCardInfo && row.支払金額 === 0) && !isEmpty;
 }
 
 /**
@@ -89,14 +116,7 @@ export async function parseCardCSV(file: File): Promise<CardRecord[]> {
 						支払金額: cleanAmount(row[2]),
 					}));
 
-					const filtered = data.filter((row) => {
-						const isCardInfo = CARD_INFO_PATTERNS.some((pattern) =>
-							pattern.test(row.店名),
-						);
-						const isEmpty = row.支払金額 === 0 && (!row.利用日 || !row.店名);
-
-						return !(isCardInfo && row.支払金額 === 0) && !isEmpty;
-					});
+					const filtered = data.filter(shouldKeepCardRecord);
 
 					resolve(filtered);
 				},
