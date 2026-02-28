@@ -24,7 +24,7 @@ const mockResult: ComparisonResult = {
 			小分類: "外食",
 			内容: "ランチ代",
 			"金額(￥)": 1200,
-			メモ: "現金支払い",
+			メモ: "",
 			資産名: "財布",
 		},
 		{
@@ -71,6 +71,14 @@ export const Default: Story = {
 		// カード明細が表示されることを確認
 		await expect(canvas.getByText("ドラッグストア")).toBeInTheDocument();
 		await expect(canvas.queryByText("ランチ代")).not.toBeInTheDocument();
+
+		// 「家計簿のみ」タブをクリックして戻る (これが uncovered だった 21行目を実行する)
+		const householdTab = canvas.getByRole("button", { name: /家計簿のみ/i });
+		await userEvent.click(householdTab);
+
+		// 再度家計簿が表示されることを確認
+		await expect(canvas.getByText("ランチ代")).toBeInTheDocument();
+		await expect(canvas.queryByText("ドラッグストア")).not.toBeInTheDocument();
 	},
 };
 
@@ -81,5 +89,22 @@ export const Empty: Story = {
 			householdOnly: [],
 			cardOnly: [],
 		},
+	},
+	play: async ({ canvasElement }) => {
+		const canvas = within(canvasElement);
+
+		// 最初は「家計簿のみ」タブの空状態を確認
+		await expect(
+			canvas.getByText("差分は見つかりませんでした"),
+		).toBeInTheDocument();
+
+		// 「カード明細のみ」タブをクリック
+		const cardTab = canvas.getByRole("button", { name: /カード明細のみ/i });
+		await userEvent.click(cardTab);
+
+		// カード側も空状態であることを確認 (これが 97-105行目を実行する)
+		await expect(
+			canvas.getByText("差分は見つかりませんでした"),
+		).toBeInTheDocument();
 	},
 };
