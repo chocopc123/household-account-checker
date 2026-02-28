@@ -1,0 +1,25 @@
+{
+  "name": "householdaccountchecker",
+  "version": "1.0.0",
+  "description": "このツールは、家計簿 Excel ファイルとクレジットカード明細 CSV ファイルを比較し、差分を検出するための Python スクリプトです。特に Amazon MasterCard の使用履歴に焦点を当てて、家計簿とカード明細の間で一致しない項目を特定します。",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/node": "^25.3.2",
+    "@types/papaparse": "^5.5.2",
+    "typescript": "^5.9.3",
+    "vite": "^7.3.1"
+  },
+  "dependencies": {
+    "lucide": "^0.575.0",
+    "papaparse": "^5.5.3",
+    "xlsx": "^0.18.5"
+  }
+}

@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>家計簿 vs カード明細 差分チェック</title>
+    <link rel="stylesheet" href="src/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+JP:wght@300;400;500;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="background-blobs">
+        <div class="blob blob-1"></div>
+        <div class="blob blob-2"></div>
+        <div class="blob blob-3"></div>
+    </div>
+
+    <main class="container">
+        <header class="header">
+            <h1><i data-lucide="calculator"></i> Account<span>Diff</span></h1>
+            <p>家計簿とカード明細を比較して、記録漏れを自動検出します。</p>
+        </header>
+
+        <section class="upload-section glass">
+            <div class="upload-grid">
+                <div class="upload-card" id="household-drop-zone">
+                    <input type="file" id="household-file" accept=".xlsx" hidden>
+                    <div class="upload-icon">
+                        <i data-lucide="file-spreadsheet"></i>
+                    </div>
+                    <h3>家計簿 (Excel)</h3>
+                    <p>ここにドラッグ＆ドロップ、またはクリックして選択</p>
+                    <span class="file-name" id="household-name">選択されていません</span>
+                </div>
+
+                <div class="upload-card" id="card-drop-zone">
+                    <input type="file" id="card-file" accept=".csv" hidden>
+                    <div class="upload-icon">
+                        <i data-lucide="credit-card"></i>
+                    </div>
+                    <h3>カード明細 (CSV)</h3>
+                    <p>ここにドラッグ＆ドロップ、またはクリックして選択</p>
+                    <span class="file-name" id="card-name">選択されていません</span>
+                </div>
+            </div>
+
+            <div class="action-area">
+                <button id="compare-btn" class="btn-primary" disabled>
+                    <i data-lucide="search"></i> 差分をチェックする
+                </button>
+            </div>
+        </section>
+
+        <div id="results-area" class="results-area hidden">
+            <section class="summary-section glass">
+                <h2><i data-lucide="bar-chart-3"></i> 概要</h2>
+                <div class="summary-grid">
+                    <div class="summary-item">
+                        <span class="label">家計簿合計</span>
+                        <span class="value" id="household-total">0 円</span>
+                    </div>
+                    <div class="summary-item">
+                        <span class="label">カード合計</span>
+                        <span class="value" id="card-total">0 円</span>
+                    </div>
+                    <div class="summary-item highlight">
+                        <span class="label">差額</span>
+                        <span class="value" id="diff-total">0 円</span>
+                    </div>
+                </div>
+            </section>
+
+            <section class="diff-section glass">
+                <div class="tab-header">
+                    <button class="tab-btn active" data-tab="household-only">
+                        家計簿のみ <span class="badge" id="household-only-count">0</span>
+                    </button>
+                    <button class="tab-btn" data-tab="card-only">
+                        カード明細のみ <span class="badge" id="card-only-count">0</span>
+                    </button>
+                </div>
+
+                <div class="tab-content" id="household-only">
+                    <div class="table-container">
+                        <table id="household-diff-table">
+                            <thead>
+                                <tr>
+                                    <th>日付</th>
+                                    <th>分類</th>
+                                    <th>小分類</th>
+                                    <th>内容</th>
+                                    <th>金額</th>
+                                    <th>備考</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                        <div class="empty-state hidden">
+                            <i data-lucide="check-circle-2"></i>
+                            <p>差分は見つかりませんでした</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="tab-content hidden" id="card-only">
+                    <div class="table-container">
+                        <table id="card-diff-table">
+                            <thead>
+                                <tr>
+                                    <th>利用日</th>
+                                    <th>店名</th>
+                                    <th>支払金額</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                        <div class="empty-state hidden">
+                            <i data-lucide="check-circle-2"></i>
+                            <p>差分は見つかりませんでした</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <p>&copy; 2026 Household Account Checker. All data stays in your browser.</p>
+    </footer>
+
+    <script type="module" src="/src/main.ts"></script>
+</body>
+</html>
