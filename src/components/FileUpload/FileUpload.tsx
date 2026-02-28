@@ -113,6 +113,7 @@ const FileUpload: React.FC<FileUploadProps> = ({
 					className={styles.btnPrimary}
 					disabled={!isReady || isProcessing}
 					onClick={onCompare}
+					aria-label={isProcessing ? "処理中..." : "差分をチェックする"}
 				>
 					{isProcessing ? (
 						<span className="loader"></span>
