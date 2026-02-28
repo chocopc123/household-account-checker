@@ -1,5 +1,12 @@
 import type { Meta, StoryObj } from "@storybook/react";
-import { expect, fireEvent, fn, userEvent, within } from "@storybook/test";
+import {
+	expect,
+	fireEvent,
+	fn,
+	mocked,
+	userEvent,
+	within,
+} from "@storybook/test";
 import FileUpload from "./FileUpload";
 
 const meta: Meta<typeof FileUpload> = {
@@ -101,7 +108,7 @@ export const InteractionTests: Story = {
 		await expect(args.onHouseholdSelect).toHaveBeenCalledWith(dummyExcelFile);
 
 		// 3. ファイルなしドロップ: Household (line 35 の false 分岐)
-		args.onHouseholdSelect.mockClear();
+		mocked(args.onHouseholdSelect).mockClear();
 		const emptyDT = new DataTransfer();
 		Object.defineProperty(emptyDT, "files", { value: [] });
 		await fireEvent.drop(householdButton, { dataTransfer: emptyDT });
