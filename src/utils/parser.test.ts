@@ -62,6 +62,18 @@ describe("parser utilities", () => {
 			const result = processHouseholdRow(row);
 			expect(result["金額(￥)"]).toBe(-500);
 		});
+
+		it("金額がパースできない場合に 0 になること", () => {
+			const row = { "金額(￥)": "abc", "収入/支出": "支出", 日付: 45139 };
+			const result = processHouseholdRow(row);
+			expect(result["金額(￥)"]).toBe(0);
+		});
+
+		it("日付が空の場合に空文字を返すこと", () => {
+			const row = { "金額(￥)": "1000", "収入/支出": "支出", 日付: "" };
+			const result = processHouseholdRow(row);
+			expect(result.日付).toBe("");
+		});
 	});
 
 	describe("shouldKeepCardRecord", () => {

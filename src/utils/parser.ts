@@ -46,8 +46,12 @@ export function processHouseholdRow(
 	} as HouseholdRecord;
 }
 
+/* v8 ignore start */
 /**
  * 家計簿のExcelファイルをパースする
+ *
+ * NOTE: FileReaderやバイナリデータの扱いに依存し、ブラウザ外でのテスト実行コストが高いため
+ * v8 ignore でカバレッジ対象外としている。内部の変換ロジックは processHouseholdRow でテスト済み。
  * @param file Excelファイル
  * @returns レコードの配列
  */
@@ -77,6 +81,7 @@ export async function parseHouseholdExcel(
 		reader.readAsArrayBuffer(file);
 	});
 }
+/* v8 ignore stop */
 
 /**
  * カード明細のレコードが有効かどうかを判定する
@@ -96,8 +101,12 @@ export function shouldKeepCardRecord(row: {
 	return !(isCardInfo && row.支払金額 === 0) && !isEmpty;
 }
 
+/* v8 ignore start */
 /**
  * カード明細のCSVファイルをパースする
+ *
+ * NOTE: FileReaderやShift-JISエンコードに依存し、ブラウザ外でのテスト実行コストが高いため
+ * v8 ignore でカバレッジ対象外としている。内部の判定ロジックは shouldKeepCardRecord でテスト済み。
  * @param file CSVファイル
  * @returns レコードの配列
  */
@@ -127,3 +136,4 @@ export async function parseCardCSV(file: File): Promise<CardRecord[]> {
 		reader.readAsText(file, "shift-jis");
 	});
 }
+/* v8 ignore stop */
