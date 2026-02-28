@@ -30,23 +30,25 @@
 .uploadIcon {
 	width: 64px;
 	height: 64px;
-	background: rgba(255, 255, 255, 0.05);
+	background: rgba(255, 255, 255, 0.08);
 	border-radius: 16px;
 	display: flex;
 	align-items: center;
 	justify-content: center;
 	margin: 0 auto 1.5rem;
-	color: var(--primary);
+	color: var(--accent-blue);
 }
 
 .uploadCard h3 {
 	font-size: 1.25rem;
+	font-weight: 600;
+	color: var(--text-main);
 	margin-bottom: 0.5rem;
 }
 
 .uploadCard p {
 	font-size: 0.875rem;
-	color: var(--text-muted);
+	color: rgba(255, 255, 255, 0.6);
 	margin-bottom: 1rem;
 }
 
