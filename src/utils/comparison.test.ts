@@ -184,4 +184,40 @@ describe("performComparison", () => {
 		expect(result.cardTotal).toBe(1500);
 		expect(result.diff).toBe(1500);
 	});
+
+	it("同一金額のカード明細が複数ある場合、マッチ済みのものをスキップして次の候補を選ぶこと", () => {
+		// このテストは comparison.ts の「matchedCardIndices.has(cIdx) → continue」ブランチをカバーする
+		// H1 と H2 が同じ金額 500円。カードも C1・C2 の 2 件が同じ 500円。
+		// H1 → C1（日付が最近）にマッチした後、H2 の探索時に C1 はスキップされ C2 が選ばれる。
+		const household: HouseholdRecord[] = [
+			{
+				日付: "2023-10-01",
+				資産: "A",
+				"収入/支出": "支出",
+				分類: "B",
+				小分類: "C",
+				内容: "H1",
+				"金額(￥)": 500,
+			},
+			{
+				日付: "2023-10-10",
+				資産: "A",
+				"収入/支出": "支出",
+				分類: "B",
+				小分類: "C",
+				内容: "H2",
+				"金額(￥)": 500,
+			},
+		];
+		const cards: CardRecord[] = [
+			{ 利用日: "2023-10-01", 店名: "C1", 支払金額: 500 }, // H1 にマッチ → 以降はスキップ対象
+			{ 利用日: "2023-10-10", 店名: "C2", 支払金額: 500 }, // H2 にマッチ
+		];
+
+		const result = performComparison(household, cards);
+
+		expect(result.householdOnly.length).toBe(0);
+		expect(result.cardOnly.length).toBe(0);
+		expect(result.discrepancies.length).toBe(0);
+	});
 });
