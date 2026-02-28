@@ -1,0 +1,52 @@
+.tabHeader {
+	display: flex;
+	gap: 1rem;
+	margin-bottom: 2rem;
+	border-bottom: 1px solid var(--glass-border);
+	padding-bottom: 1rem;
+}
+
+.tabBtn {
+	background: none;
+	border: none;
+	color: var(--text-muted);
+	font-size: 1.125rem;
+	font-weight: 600;
+	cursor: pointer;
+	padding: 0.5rem 1rem;
+	border-radius: 8px;
+	transition: all 0.2s;
+	display: flex;
+	align-items: center;
+	gap: 0.5rem;
+}
+
+.tabBtn:hover {
+	color: var(--text-main);
+	background: rgba(255, 255, 255, 0.05);
+}
+
+.tabBtn.active {
+	color: var(--primary);
+	background: rgba(99, 102, 241, 0.1);
+}
+
+.badge {
+	background: var(--primary);
+	color: white;
+	font-size: 0.75rem;
+	padding: 0.125rem 0.5rem;
+	border-radius: 20px;
+}
+
+.emptyState {
+	text-align: center;
+	padding: 4rem 2rem;
+}
+
+.emptyState i {
+	width: 48px;
+	height: 48px;
+	color: var(--success);
+	margin-bottom: 1rem;
+}

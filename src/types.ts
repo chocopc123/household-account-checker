@@ -23,11 +23,20 @@ export interface CardRecord {
 }
 
 /**
+ * 7日以上の日付のずれがある項目の型
+ */
+export interface Discrepancy extends HouseholdRecord {
+  cardDate: string;
+  dateDiff: number;
+}
+
+/**
  * 比較結果の型
  */
 export interface ComparisonResult {
   householdOnly: HouseholdRecord[];
   cardOnly: CardRecord[];
+  discrepancies: Discrepancy[];
   householdTotal: number;
   cardTotal: number;
   diff: number;

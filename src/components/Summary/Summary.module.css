@@ -1,0 +1,76 @@
+.summarySection {
+	margin-bottom: 2rem;
+}
+
+.summarySection h2 {
+	font-size: 1.5rem;
+	margin-bottom: 2rem;
+	display: flex;
+	align-items: center;
+	gap: 0.75rem;
+}
+
+.summaryGrid {
+	display: grid;
+	grid-template-columns: repeat(3, 1fr);
+	gap: 1.5rem;
+}
+
+.summaryItem {
+	background: rgba(0, 0, 0, 0.2);
+	padding: 1.5rem;
+	border-radius: 16px;
+	display: flex;
+	flex-direction: column;
+	gap: 0.5rem;
+}
+
+.summaryItem.highlight {
+	background: linear-gradient(
+		135deg,
+		rgba(99, 102, 241, 0.1),
+		rgba(192, 132, 252, 0.1)
+	);
+	border: 1px solid rgba(192, 132, 252, 0.2);
+}
+
+.summaryItem .label {
+	font-size: 0.875rem;
+	color: var(--text-muted);
+}
+
+.summaryItem .value {
+	font-size: 1.5rem;
+	font-weight: 700;
+}
+
+.diffValue {
+	color: var(--accent-blue);
+}
+
+/* Discrepancy styles */
+.discrepancyArea {
+	margin-top: 1.5rem;
+	padding-top: 1.5rem;
+	border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.discrepancyTitle {
+	display: flex;
+	align-items: center;
+	gap: 0.5rem;
+	color: #ffb74d;
+	font-size: 1rem;
+	margin-bottom: 1rem;
+}
+
+.textWarning {
+	color: #ffb74d;
+	font-weight: 600;
+}
+
+@media (max-width: 768px) {
+	.summaryGrid {
+		grid-template-columns: 1fr;
+	}
+}
