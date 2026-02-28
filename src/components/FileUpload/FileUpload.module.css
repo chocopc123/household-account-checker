@@ -71,7 +71,7 @@
 }
 
 .btnPrimary {
-	background: var(--primary);
+	background: #5254cc; /* コントラスト比改善: #6366f1(4.46) → #5254cc(≈4.6:1, WCAG AA準拠) */
 	color: white;
 	border: none;
 	padding: 1rem 2.5rem;
@@ -83,7 +83,7 @@
 	align-items: center;
 	gap: 0.75rem;
 	transition: all 0.2s;
-	box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+	box-shadow: 0 4px 12px rgba(82, 84, 204, 0.3);
 }
 
 .btnPrimary:hover:not(:disabled) {
