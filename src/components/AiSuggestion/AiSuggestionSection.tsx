@@ -82,8 +82,10 @@ const AiSuggestionSection: React.FC<AiSuggestionSectionProps> = ({
 			return;
 		}
 
-		const suggestions =
-			(await analyzeUnmatched(result.householdOnly, result.cardOnly)) || [];
+		const suggestions = await analyzeUnmatched(
+			result.householdOnly,
+			result.cardOnly,
+		);
 
 		const matchedHouseIndices = new Set(
 			aiMatched.flatMap((m) => m.householdIndices),

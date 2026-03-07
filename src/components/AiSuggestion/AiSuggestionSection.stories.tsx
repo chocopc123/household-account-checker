@@ -1,7 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react";
 import { type ComponentProps, useState } from "react";
 import { expect, fn, userEvent, waitFor, within } from "storybook/test";
-import { vi } from "vitest";
 import type { AiSuggestion } from "../../hooks/useGeminiAssist";
 import type { ComparisonResult } from "../../types";
 import AiSuggestionSection from "./AiSuggestionSection";
@@ -240,7 +239,9 @@ export const NoSuggestionsFound: Story = {
 	play: async ({ canvasElement }) => {
 		const canvas = within(canvasElement);
 		// alertをモック
-		const alertMock = vi.spyOn(window, "alert").mockImplementation(() => {});
+		const originalAlert = window.alert;
+		const alertMock = fn();
+		window.alert = alertMock;
 
 		const scanBtn = await canvas.findByText(/Gemini AIで未照合項目をスキャン/i);
 		await userEvent.click(scanBtn);
@@ -250,7 +251,7 @@ export const NoSuggestionsFound: Story = {
 				"AIが提案できるマッチングが見つかりませんでした。",
 			);
 		});
-		alertMock.mockRestore();
+		window.alert = originalAlert;
 	},
 };
 
