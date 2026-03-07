@@ -58,7 +58,7 @@ const mockHistory: AiReviewHistory[] = [
 ];
 
 const meta: Meta<typeof AiHistoryPanel> = {
-	title: "Components/AiHistoryPanel",
+	title: "Components/AiSuggestion/AiHistoryPanel",
 	component: AiHistoryPanel,
 	args: {
 		onUndo: fn(),

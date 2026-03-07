@@ -85,7 +85,7 @@ const mockCardExtra: CardRecord[] = [
 ];
 
 const meta: Meta<typeof AiReviewDashboard> = {
-	title: "Components/AiReviewDashboard",
+	title: "Components/AiSuggestion/AiReviewDashboard",
 	component: AiReviewDashboard,
 	args: {
 		onApprove: fn(),
