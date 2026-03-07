@@ -1,12 +1,13 @@
-import { Sparkles } from "lucide-react";
+import { Clock, Sparkles } from "lucide-react";
 import type React from "react";
 import { useState } from "react";
+import AiHistoryPanel from "./components/AiSuggestion/AiHistoryPanel";
 import AiReviewDashboard from "./components/AiSuggestion/AiReviewDashboard";
 import FileUpload from "./components/FileUpload/FileUpload";
 import Header from "./components/Header/Header";
 import ResultsTable from "./components/ResultsTable/ResultsTable";
 import Summary from "./components/Summary/Summary";
-import type { AiSuggestion } from "./hooks/useGeminiAssist";
+import type { AiReviewHistory, AiSuggestion } from "./hooks/useGeminiAssist";
 import { useGeminiAssist } from "./hooks/useGeminiAssist";
 import type { ComparisonResult } from "./types";
 import { performComparison } from "./utils/comparison";
@@ -21,7 +22,9 @@ const App: React.FC = () => {
 
 	const [aiMatched, setAiMatched] = useState<AiSuggestion[]>([]);
 	const [aiSuggestions, setAiSuggestions] = useState<AiSuggestion[]>([]);
+	const [aiHistory, setAiHistory] = useState<AiReviewHistory[]>([]);
 	const [showAiDashboard, setShowAiDashboard] = useState(false);
+	const [showAiHistory, setShowAiHistory] = useState(false);
 	const {
 		analyzeUnmatched,
 		isLoading: isAiLoading,
@@ -40,7 +43,9 @@ const App: React.FC = () => {
 			setResult(res);
 			setAiMatched([]);
 			setAiSuggestions([]);
+			setAiHistory([]);
 			setShowAiDashboard(false);
+			setShowAiHistory(false);
 
 			// Scroll to results after a short delay to allow rendering
 			setTimeout(() => {
@@ -87,6 +92,10 @@ const App: React.FC = () => {
 	};
 
 	const handleApproveSuggestion = (suggestion: AiSuggestion) => {
+		setAiHistory((prev) => [
+			{ suggestion, action: "approve", timestamp: Date.now() },
+			...prev,
+		]);
 		setAiMatched((prev) => [...prev, suggestion]);
 		setAiSuggestions((prev) => {
 			// 今回承認したものを除外
@@ -108,11 +117,29 @@ const App: React.FC = () => {
 	};
 
 	const handleRejectSuggestion = (suggestion: AiSuggestion) => {
+		setAiHistory((prev) => [
+			{ suggestion, action: "reject", timestamp: Date.now() },
+			...prev,
+		]);
 		setAiSuggestions((prev) => {
 			const next = prev.filter((s) => s.id !== suggestion.id);
 			if (next.length === 0) setShowAiDashboard(false);
 			return next;
 		});
+	};
+
+	const handleUndoAiAction = (historyItem: AiReviewHistory) => {
+		setAiHistory((prev) =>
+			prev.filter((h) => h.suggestion.id !== historyItem.suggestion.id),
+		);
+
+		if (historyItem.action === "approve") {
+			setAiMatched((prev) =>
+				prev.filter((m) => m.id !== historyItem.suggestion.id),
+			);
+		}
+
+		setAiSuggestions((prev) => [historyItem.suggestion, ...prev]);
 	};
 
 	return (
@@ -147,31 +174,61 @@ const App: React.FC = () => {
 									marginTop: "2rem",
 									display: "flex",
 									justifyContent: "center",
-									flexDirection: "column",
-									alignItems: "center",
+									gap: "1rem",
+									alignItems: "flex-start",
+									flexWrap: "wrap",
 								}}
 							>
-								<button
-									type="button"
-									onClick={handleAiScan}
-									disabled={isAiLoading}
-									className="btn-ai"
+								<div
+									style={{
+										display: "flex",
+										flexDirection: "column",
+										alignItems: "center",
+									}}
 								>
-									<Sparkles size={20} className="sparkle-icon" />
-									{isAiLoading
-										? "AIが分析中..."
-										: "Gemini AIで未照合項目をスキャン"}
-								</button>
-								{aiError && (
-									<p
+									<button
+										type="button"
+										onClick={handleAiScan}
+										disabled={isAiLoading}
+										className="btn-ai"
+									>
+										<Sparkles size={20} className="sparkle-icon" />
+										{isAiLoading
+											? "AIが分析中..."
+											: "Gemini AIで未照合項目をスキャン"}
+									</button>
+									{aiError && (
+										<p
+											style={{
+												color: "red",
+												marginTop: "0.5rem",
+												fontSize: "0.9rem",
+											}}
+										>
+											{aiError}
+										</p>
+									)}
+								</div>
+
+								{aiHistory.length > 0 && (
+									<button
+										type="button"
+										onClick={() => setShowAiHistory(true)}
+										className="btn-ai"
 										style={{
-											color: "red",
-											marginTop: "0.5rem",
-											fontSize: "0.9rem",
+											background: "white",
+											color: "#333",
+											border: "1px solid #ccc",
+											boxShadow: "0 2px 5px rgba(0,0,0,0.05)",
 										}}
 									>
-										{aiError}
-									</p>
+										<Clock
+											size={20}
+											className="sparkle-icon"
+											style={{ color: "#666" }}
+										/>
+										履歴を確認 ({aiHistory.length}件)
+									</button>
 								)}
 							</div>
 						)}
@@ -195,6 +252,15 @@ const App: React.FC = () => {
 					onApprove={handleApproveSuggestion}
 					onReject={handleRejectSuggestion}
 					onClose={() => setShowAiDashboard(false)}
+				/>
+			)}
+			{showAiHistory && result && (
+				<AiHistoryPanel
+					history={aiHistory}
+					householdOnly={result.householdOnly}
+					cardOnly={result.cardOnly}
+					onUndo={handleUndoAiAction}
+					onClose={() => setShowAiHistory(false)}
 				/>
 			)}
 		</>

@@ -10,6 +10,12 @@ export interface AiSuggestion {
 	confidence: "High" | "Medium" | "Low";
 }
 
+export interface AiReviewHistory {
+	suggestion: AiSuggestion;
+	action: "approve" | "reject";
+	timestamp: number;
+}
+
 export const useGeminiAssist = () => {
 	const [isLoading, setIsLoading] = useState(false);
 	const [error, setError] = useState<string | null>(null);
