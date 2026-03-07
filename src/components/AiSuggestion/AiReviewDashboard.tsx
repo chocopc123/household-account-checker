@@ -74,8 +74,8 @@ const AiReviewDashboard: React.FC<AiReviewDashboardProps> = ({
 					<p className="ai-instruction">
 						AIが提案するマッチング候補です。
 						<br />
-						<kbd>Enter</kbd> (または <kbd>Y</kbd>) で承認、<kbd>Esc</kbd>{" "}
-						(または <kbd>N</kbd>) で却下できます。
+						<kbd>Enter</kbd> / <kbd>Y</kbd> で承認、<kbd>Esc</kbd> /{" "}
+						<kbd>N</kbd> で却下できます。
 					</p>
 
 					{activeSuggestion && (
