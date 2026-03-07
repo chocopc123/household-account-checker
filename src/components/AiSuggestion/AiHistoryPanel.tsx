@@ -2,6 +2,7 @@ import { ArrowRightLeft, Clock, RefreshCcw, X } from "lucide-react";
 import type React from "react";
 import type { AiReviewHistory } from "../../hooks/useGeminiAssist";
 import type { CardRecord, HouseholdRecord } from "../../types";
+import "./AiReviewDashboard.css";
 import "./AiHistoryPanel.css";
 
 interface AiHistoryPanelProps {

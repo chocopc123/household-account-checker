@@ -3,6 +3,7 @@
 
 .ai-history-dashboard {
 	background: var(--bg-card, rgba(255, 255, 255, 0.95));
+	color: #1f2937;
 	width: 95%;
 	max-width: 900px;
 	max-height: 90vh;
@@ -79,7 +80,7 @@
 
 .ai-history-column-title {
 	font-size: 0.9rem;
-	color: var(--text-light);
+	color: var(--text-light, #64748b);
 	margin-bottom: 0.5rem;
 }
 
