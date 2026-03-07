@@ -38,10 +38,12 @@ describe("useGeminiAssist", () => {
 	beforeEach(() => {
 		vi.stubEnv("VITE_GEMINI_API_KEY", "test-api-key");
 		vi.clearAllMocks();
+		vi.spyOn(console, "error").mockImplementation(() => {});
 	});
 
 	afterEach(() => {
 		vi.unstubAllEnvs();
+		vi.restoreAllMocks();
 	});
 
 	it("初期状態が正しいこと", () => {
