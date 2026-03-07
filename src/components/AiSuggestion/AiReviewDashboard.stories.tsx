@@ -217,6 +217,9 @@ export const KeyboardShortcutsApprove: Story = {
 		const canvas = within(canvasElement);
 		await expect(canvas.getByText("アマゾン")).toBeInTheDocument();
 
+		// キーボードイベントが window に届くようフォーカスを確立する
+		canvasElement.focus();
+
 		// Enter to approve
 		await userEvent.keyboard("{Enter}");
 		await expect(args.onApprove).toHaveBeenCalledWith(mockSuggestions[0]);
@@ -236,6 +239,9 @@ export const KeyboardShortcutsReject: Story = {
 	play: async ({ canvasElement, args }) => {
 		const canvas = within(canvasElement);
 		await expect(canvas.getByText("アマゾン")).toBeInTheDocument();
+
+		// キーボードイベントが window に届くようフォーカスを確立する
+		canvasElement.focus();
 
 		// Escape to reject
 		await userEvent.keyboard("{Escape}");
