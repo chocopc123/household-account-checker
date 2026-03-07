@@ -217,8 +217,8 @@ export const KeyboardShortcutsApprove: Story = {
 		const canvas = within(canvasElement);
 		await expect(canvas.getByText("アマゾン")).toBeInTheDocument();
 
-		// キーボードイベントが window に届くようフォーカスを確立する
-		canvasElement.focus();
+		// キーボードイベントが document に届くようクリックしてフォーカスを確立する
+		await userEvent.click(canvasElement);
 
 		// Enter to approve
 		await userEvent.keyboard("{Enter}");
@@ -240,8 +240,8 @@ export const KeyboardShortcutsReject: Story = {
 		const canvas = within(canvasElement);
 		await expect(canvas.getByText("アマゾン")).toBeInTheDocument();
 
-		// キーボードイベントが window に届くようフォーカスを確立する
-		canvasElement.focus();
+		// キーボードイベントが document に届くようクリックしてフォーカスを確立する
+		await userEvent.click(canvasElement);
 
 		// Escape to reject
 		await userEvent.keyboard("{Escape}");
@@ -285,9 +285,10 @@ export const NoActiveSuggestion: Story = {
 		householdOnly: mockHousehold,
 		cardOnly: mockCard,
 	},
-	play: async () => {
+	play: async ({ canvasElement }) => {
 		// suggestions が空の場合、コンポーネントは null を返すが、
-		// window のイベントリスナーが呼ばれて Guard 節を通過することを確認する
+		// document のイベントリスナーが呼ばれて Guard 節を通過することを確認する
+		await userEvent.click(canvasElement);
 		await userEvent.keyboard("{Enter}");
 	},
 };

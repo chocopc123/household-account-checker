@@ -43,8 +43,8 @@ const AiReviewDashboard: React.FC<AiReviewDashboardProps> = ({
 			}
 		};
 
-		window.addEventListener("keydown", handleKeyDown);
-		return () => window.removeEventListener("keydown", handleKeyDown);
+		document.addEventListener("keydown", handleKeyDown);
+		return () => document.removeEventListener("keydown", handleKeyDown);
 	}, [activeSuggestion, onApprove, onReject]);
 
 	if (suggestions.length === 0) {
