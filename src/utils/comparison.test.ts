@@ -210,7 +210,7 @@ describe("performComparison", () => {
 			},
 		];
 		const cards: CardRecord[] = [
-			{ 利用日: "2023-10-01", 店名: "C1", 支払金額: 500 }, // H1 にマッチ → 以降はスキップ対象
+			{ 利用日: "2023-10-01", 店名: "C1", 支払金額: 500 }, // H1 にマッチ
 			{ 利用日: "2023-10-10", 店名: "C2", 支払金額: 500 }, // H2 にマッチ
 		];
 
@@ -219,5 +219,42 @@ describe("performComparison", () => {
 		expect(result.householdOnly.length).toBe(0);
 		expect(result.cardOnly.length).toBe(0);
 		expect(result.discrepancies.length).toBe(0);
+	});
+
+	it("配列の順序に関わらず、日付が最も近い項目が優先的にマッチングされること（非グリーディー）", () => {
+		// 以前のロジックでは「Far Match」が先にあるため「C1」を奪ってしまい、
+		// 「Close Match」がマッチングに失敗していたケース。
+		const household: HouseholdRecord[] = [
+			{
+				日付: "2023-10-10",
+				資産: "A",
+				"収入/支出": "支出",
+				分類: "B",
+				小分類: "C",
+				内容: "Far Match",
+				"金額(￥)": 500,
+			},
+			{
+				日付: "2023-10-01",
+				資産: "A",
+				"収入/支出": "支出",
+				分類: "B",
+				小分類: "C",
+				内容: "Close Match",
+				"金額(￥)": 500,
+			},
+		];
+		const cards: CardRecord[] = [
+			{ 利用日: "2023-10-01", 店名: "C1", 支払金額: 500 },
+		];
+
+		const result = performComparison(household, cards);
+
+		// 日付順にソートしてマッチングするため、Close Match (10/01) が C1 (10/01) とマッチする。
+		// Far Match (10/10) が householdOnly に残る。
+		expect(result.householdOnly.length).toBe(1);
+		expect(result.householdOnly[0].内容).toBe("Far Match");
+		expect(result.cardOnly.length).toBe(0);
+		expect(result.discrepancies.length).toBe(0); // 0 days diff < 7
 	});
 });
