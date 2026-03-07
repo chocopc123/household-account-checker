@@ -64,8 +64,14 @@ const App: React.FC = () => {
 		}
 	};
 
-	const handleAiScan = async () => {
+	const handleAiScan = async (forceRescan = false) => {
 		if (!result) return;
+
+		if (!forceRescan && aiSuggestions.length > 0) {
+			setShowAiDashboard(true);
+			return;
+		}
+
 		const suggestions = await analyzeUnmatched(
 			result.householdOnly,
 			result.cardOnly,
@@ -188,15 +194,35 @@ const App: React.FC = () => {
 								>
 									<button
 										type="button"
-										onClick={handleAiScan}
+										onClick={() => handleAiScan(false)}
 										disabled={isAiLoading}
 										className="btn-ai"
 									>
 										<Sparkles size={20} className="sparkle-icon" />
 										{isAiLoading
 											? "AIが分析中..."
-											: "Gemini AIで未照合項目をスキャン"}
+											: aiSuggestions.length > 0
+												? `AIの提案を確認 (${aiSuggestions.length}件)`
+												: "Gemini AIで未照合項目をスキャン"}
 									</button>
+									{aiSuggestions.length > 0 && (
+										<button
+											type="button"
+											onClick={() => handleAiScan(true)}
+											disabled={isAiLoading}
+											style={{
+												background: "none",
+												border: "none",
+												color: "#666",
+												textDecoration: "underline",
+												marginTop: "0.5rem",
+												cursor: "pointer",
+												fontSize: "0.9rem",
+											}}
+										>
+											最初から再スキャンする
+										</button>
+									)}
 									{aiError && (
 										<p
 											style={{
