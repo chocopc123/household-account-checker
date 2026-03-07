@@ -6,7 +6,7 @@ import {
 	mocked,
 	userEvent,
 	within,
-} from "@storybook/test";
+} from "storybook/test";
 import FileUpload from "./FileUpload";
 
 const meta: Meta<typeof FileUpload> = {
@@ -121,10 +121,6 @@ export const InteractionTests: Story = {
 		await expect(args.onCardSelect).toHaveBeenCalledWith(dummyCsvFile);
 
 		// 5. クリック動作 (onClick) のカバレッジ回収
-		await fireEvent.click(householdButton);
-		await fireEvent.click(cardButton);
-
-		// 6. input type="file" の change イベントのテスト
 		const householdInput = canvasElement.querySelector(
 			'input[accept=".xlsx"]',
 		) as HTMLInputElement;
@@ -132,6 +128,18 @@ export const InteractionTests: Story = {
 			'input[accept=".csv"]',
 		) as HTMLInputElement;
 
+		// 実際にファイル選択画面が開かないようにモック化
+		householdInput.click = fn();
+		cardInput.click = fn();
+
+		await fireEvent.click(householdButton);
+		await expect(householdInput.click).toHaveBeenCalled();
+
+		await fireEvent.click(cardButton);
+		await expect(cardInput.click).toHaveBeenCalled();
+
+		// 6. input type="file" の change イベントのテスト
+		// モックを戻すか、そのまま change イベントを発火（fireEvent.change は click メソッドに依存しない）
 		await fireEvent.change(householdInput, {
 			target: { files: [dummyExcelFile] },
 		});

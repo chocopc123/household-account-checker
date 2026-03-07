@@ -52,14 +52,7 @@ const FileUpload: React.FC<FileUploadProps> = ({
 	return (
 		<section className="glass">
 			<div className={styles.uploadGrid}>
-				<button
-					type="button"
-					className={`${styles.uploadCard} ${householdDragOver ? styles.dragOver : ""}`}
-					onClick={() => householdInputRef.current?.click()}
-					onDragOver={(e) => handleDragOver(e, "household")}
-					onDragLeave={() => handleDragLeave("household")}
-					onDrop={(e) => handleDrop(e, "household")}
-				>
+				<div className={styles.uploadCardContainer}>
 					<input
 						type="file"
 						ref={householdInputRef}
@@ -67,26 +60,30 @@ const FileUpload: React.FC<FileUploadProps> = ({
 							e.target.files?.[0] && onHouseholdSelect(e.target.files[0])
 						}
 						accept=".xlsx"
-						hidden
+						className={styles.hiddenInput}
+						aria-hidden="true"
+						tabIndex={-1}
 					/>
-					<div className={styles.uploadIcon}>
-						<FileSpreadsheet />
-					</div>
-					<h3>家計簿 (Excel)</h3>
-					<p>ここにドラッグ＆ドロップ、またはクリックして選択</p>
-					<span className={styles.fileName}>
-						{householdFileName || "選択されていません"}
-					</span>
-				</button>
+					<button
+						type="button"
+						className={`${styles.uploadCard} ${householdDragOver ? styles.dragOver : ""}`}
+						onClick={() => householdInputRef.current?.click()}
+						onDragOver={(e) => handleDragOver(e, "household")}
+						onDragLeave={() => handleDragLeave("household")}
+						onDrop={(e) => handleDrop(e, "household")}
+					>
+						<div className={styles.uploadIcon}>
+							<FileSpreadsheet />
+						</div>
+						<h3>家計簿 (Excel)</h3>
+						<p>ここにドラッグ＆ドロップ、またはクリックして選択</p>
+						<span className={styles.fileName}>
+							{householdFileName || "選択されていません"}
+						</span>
+					</button>
+				</div>
 
-				<button
-					type="button"
-					className={`${styles.uploadCard} ${cardDragOver ? styles.dragOver : ""}`}
-					onClick={() => cardInputRef.current?.click()}
-					onDragOver={(e) => handleDragOver(e, "card")}
-					onDragLeave={() => handleDragLeave("card")}
-					onDrop={(e) => handleDrop(e, "card")}
-				>
+				<div className={styles.uploadCardContainer}>
 					<input
 						type="file"
 						ref={cardInputRef}
@@ -94,17 +91,28 @@ const FileUpload: React.FC<FileUploadProps> = ({
 							e.target.files?.[0] && onCardSelect(e.target.files[0])
 						}
 						accept=".csv"
-						hidden
+						className={styles.hiddenInput}
+						aria-hidden="true"
+						tabIndex={-1}
 					/>
-					<div className={styles.uploadIcon}>
-						<CreditCard />
-					</div>
-					<h3>カード明細 (CSV)</h3>
-					<p>ここにドラッグ＆ドロップ、またはクリックして選択</p>
-					<span className={styles.fileName}>
-						{cardFileName || "選択されていません"}
-					</span>
-				</button>
+					<button
+						type="button"
+						className={`${styles.uploadCard} ${cardDragOver ? styles.dragOver : ""}`}
+						onClick={() => cardInputRef.current?.click()}
+						onDragOver={(e) => handleDragOver(e, "card")}
+						onDragLeave={() => handleDragLeave("card")}
+						onDrop={(e) => handleDrop(e, "card")}
+					>
+						<div className={styles.uploadIcon}>
+							<CreditCard />
+						</div>
+						<h3>カード明細 (CSV)</h3>
+						<p>ここにドラッグ＆ドロップ、またはクリックして選択</p>
+						<span className={styles.fileName}>
+							{cardFileName || "選択されていません"}
+						</span>
+					</button>
+				</div>
 			</div>
 
 			<div className={styles.actionArea}>

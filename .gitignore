@@ -5,3 +5,6 @@
 *storybook.log
 storybook-static
 coverage
+.env*
+!.env.example
+.vscode

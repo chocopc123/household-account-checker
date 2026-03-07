@@ -1,16 +1,33 @@
 import { CheckCircle2 } from "lucide-react";
 import type React from "react";
 import { useState } from "react";
+import type { AiSuggestion } from "../../hooks/useGeminiAssist";
 import type { ComparisonResult } from "../../types";
 import { formatCurrency } from "../../utils/formatter";
 import styles from "./ResultsTable.module.css";
 
 interface ResultsTableProps {
 	data: ComparisonResult;
+	aiMatched?: AiSuggestion[];
 }
 
-const ResultsTable: React.FC<ResultsTableProps> = ({ data }) => {
+const ResultsTable: React.FC<ResultsTableProps> = ({
+	data,
+	aiMatched = [],
+}) => {
 	const [activeTab, setActiveTab] = useState<"household" | "card">("household");
+
+	const matchedHouseIndices = new Set(
+		aiMatched.flatMap((m) => m.householdIndices),
+	);
+	const matchedCardIndices = new Set(aiMatched.flatMap((m) => m.cardIndices));
+
+	const displayHousehold = data.householdOnly.filter(
+		(_, i) => !matchedHouseIndices.has(i),
+	);
+	const displayCard = data.cardOnly.filter(
+		(_, i) => !matchedCardIndices.has(i),
+	);
 
 	return (
 		<section className="glass">
@@ -21,7 +38,7 @@ const ResultsTable: React.FC<ResultsTableProps> = ({ data }) => {
 					onClick={() => setActiveTab("household")}
 				>
 					家計簿のみ{" "}
-					<span className={styles.badge}>{data.householdOnly.length}</span>
+					<span className={styles.badge}>{displayHousehold.length}</span>
 				</button>
 				<button
 					type="button"
@@ -29,14 +46,14 @@ const ResultsTable: React.FC<ResultsTableProps> = ({ data }) => {
 					onClick={() => setActiveTab("card")}
 				>
 					カード明細のみ{" "}
-					<span className={styles.badge}>{data.cardOnly.length}</span>
+					<span className={styles.badge}>{displayCard.length}</span>
 				</button>
 			</div>
 
 			<div className={styles.tabContent}>
 				{activeTab === "household" ? (
 					<div className="table-container">
-						{data.householdOnly.length > 0 ? (
+						{displayHousehold.length > 0 ? (
 							<table>
 								<thead>
 									<tr>
@@ -49,7 +66,7 @@ const ResultsTable: React.FC<ResultsTableProps> = ({ data }) => {
 									</tr>
 								</thead>
 								<tbody>
-									{data.householdOnly.map((row, i) => (
+									{displayHousehold.map((row, i) => (
 										<tr key={`${row.日付}-${row.内容}-${row["金額(￥)"]}-${i}`}>
 											<td>{row.日付}</td>
 											<td>{row.分類}</td>
@@ -74,7 +91,7 @@ const ResultsTable: React.FC<ResultsTableProps> = ({ data }) => {
 					</div>
 				) : (
 					<div className="table-container">
-						{data.cardOnly.length > 0 ? (
+						{displayCard.length > 0 ? (
 							<table>
 								<thead>
 									<tr>
@@ -84,7 +101,7 @@ const ResultsTable: React.FC<ResultsTableProps> = ({ data }) => {
 									</tr>
 								</thead>
 								<tbody>
-									{data.cardOnly.map((row, i) => (
+									{displayCard.map((row, i) => (
 										<tr key={`${row.利用日}-${row.店名}-${row.支払金額}-${i}`}>
 											<td>{row.利用日}</td>
 											<td>{row.店名}</td>
